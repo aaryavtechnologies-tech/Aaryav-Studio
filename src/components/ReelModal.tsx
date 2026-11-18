@@ -8,17 +8,37 @@ interface ReelModalProps {
 }
 
 export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
-  const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
+  // Auto-play whenever a reel is opened
   useEffect(() => {
     if (reel && videoRef.current) {
-      videoRef.current.currentTime = 0;
-      videoRef.current.play().catch(() => {});
-      setIsPlaying(true);
+      const vid = videoRef.current;
+      vid.currentTime = 0;
+      vid.muted = isMuted;
+
+      const playPromise = vid.play();
+      if (playPromise !== undefined) {
+        playPromise
+          .then(() => {
+            setIsPlaying(true);
+          })
+          .catch((err) => {
+            console.warn('Autoplay with audio blocked, forcing muted play:', err);
+            vid.muted = true;
+            setIsMuted(true);
+            vid.play()
+              .then(() => setIsPlaying(true))
+              .catch((e) => {
+                console.error('Video playback failed:', e);
+                setIsPlaying(false);
+              });
+          });
+      }
     }
   }, [reel]);
 
@@ -33,21 +53,33 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onClose]);
 
-  const togglePlay = () => {
+  const togglePlay = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (!videoRef.current) return;
-    if (isPlaying) {
-      videoRef.current.pause();
-      setIsPlaying(false);
+    const vid = videoRef.current;
+
+    if (vid.paused) {
+      const p = vid.play();
+      if (p !== undefined) {
+        p.then(() => setIsPlaying(true))
+          .catch(() => {
+            vid.muted = true;
+            setIsMuted(true);
+            vid.play().then(() => setIsPlaying(true));
+          });
+      }
     } else {
-      videoRef.current.play();
-      setIsPlaying(true);
+      vid.pause();
+      setIsPlaying(false);
     }
   };
 
-  const toggleMute = () => {
+  const toggleMute = (e?: React.MouseEvent) => {
+    if (e) e.stopPropagation();
     if (!videoRef.current) return;
-    videoRef.current.muted = !isMuted;
-    setIsMuted(!isMuted);
+    const nextMuted = !videoRef.current.muted;
+    videoRef.current.muted = nextMuted;
+    setIsMuted(nextMuted);
   };
 
   const handleTimeUpdate = () => {
@@ -55,6 +87,14 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
       setCurrentTime(videoRef.current.currentTime);
       setDuration(videoRef.current.duration || 0);
     }
+  };
+
+  const handleSeek = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!videoRef.current || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const clickX = e.clientX - rect.left;
+    const percentage = Math.max(0, Math.min(1, clickX / rect.width));
+    videoRef.current.currentTime = percentage * duration;
   };
 
   const formatTime = (secs: number) => {
@@ -67,7 +107,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
+      className="fixed inset-0 z-50 bg-black/90 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto"
       onClick={onClose}
     >
       <div 
@@ -79,7 +119,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
         {/* Top Control Bar */}
         <div className="bg-black text-[#FFE15A] px-4 py-2.5 flex items-center justify-between border-b-3 border-black font-mono text-xs uppercase tracking-wider shrink-0">
           <div className="flex items-center gap-2">
-            <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse"></span>
+            <span className="w-2.5 h-2.5 bg-red-500 rounded-full animate-pulse" />
             <span className="font-bold">AARYAV REELS // 9:16 PLAYER</span>
           </div>
           <button
@@ -91,20 +131,25 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
           </button>
         </div>
 
-        {/* 9:16 Vertical Screen Only (No side text panel) */}
-        <div className="relative aspect-[9/16] max-h-[calc(92vh-85px)] bg-black overflow-hidden flex items-center justify-center grow">
+        {/* 9:16 Vertical Screen Only */}
+        <div 
+          className="relative aspect-[9/16] max-h-[calc(92vh-85px)] bg-black overflow-hidden flex items-center justify-center grow cursor-pointer select-none"
+          onClick={togglePlay}
+        >
           {reel.videoSrc ? (
             <video
+              key={reel.id}
               ref={videoRef}
               src={reel.videoSrc}
               poster={reel.thumbnail}
-              className="w-full h-full object-cover cursor-pointer"
+              className="w-full h-full object-cover"
               playsInline
               autoPlay
               loop
               muted={isMuted}
-              onClick={togglePlay}
               onTimeUpdate={handleTimeUpdate}
+              onPlay={() => setIsPlaying(true)}
+              onPause={() => setIsPlaying(false)}
             />
           ) : (
             <img
@@ -115,7 +160,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
           )}
 
           {/* Reel Overlay */}
-          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/30 pointer-events-none flex flex-col justify-between p-3.5">
+          <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/35 pointer-events-none flex flex-col justify-between p-3.5">
             {/* Top badges */}
             <div className="flex items-center justify-between pointer-events-auto">
               <span className="bg-[#FFE15A] text-black border border-black font-mono font-bold text-[10px] px-2 py-0.5 uppercase shadow-[2px_2px_0px_#000000]">
@@ -124,13 +169,13 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
               <button
                 type="button"
                 onClick={toggleMute}
-                className="bg-black/80 p-1.5 border border-white/30 text-[#FFE15A] hover:bg-black cursor-pointer shadow-[2px_2px_0px_#000000] flex items-center gap-1.5 px-2 font-mono text-[10px]"
-                aria-label={isMuted ? 'Unmute' : 'Mute'}
+                className="bg-black/80 hover:bg-black p-1.5 border border-white/40 text-[#FFE15A] cursor-pointer shadow-[2px_2px_0px_#000000] flex items-center gap-1.5 px-2.5 font-mono text-[10px] uppercase font-bold"
+                aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
               >
                 {isMuted ? (
                   <>
                     <VolumeX className="w-3.5 h-3.5 text-red-400" />
-                    <span>MUTED</span>
+                    <span>UNMUTE 🔊</span>
                   </>
                 ) : (
                   <>
@@ -141,43 +186,63 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
               </button>
             </div>
 
-            {/* Center Play/Pause button */}
-            <button
-              type="button"
-              onClick={togglePlay}
-              className="pointer-events-auto w-14 h-14 bg-black/70 hover:bg-black text-[#FFE15A] border-2 border-[#FFE15A] rounded-full flex items-center justify-center mx-auto transition-transform hover:scale-110 shadow-[4px_4px_0px_#000000] cursor-pointer"
-              aria-label={isPlaying ? 'Pause video' : 'Play video'}
-            >
-              {isPlaying ? <Pause className="w-7 h-7" /> : <Play className="w-7 h-7 ml-1 fill-[#FFE15A]" />}
-            </button>
+            {/* Center Play Button Overlay (visible when paused) */}
+            {!isPlaying && (
+              <div className="pointer-events-auto my-auto flex flex-col items-center">
+                <button
+                  type="button"
+                  onClick={togglePlay}
+                  className="w-16 h-16 bg-[#FFE15A] text-black border-3 border-black rounded-full flex items-center justify-center transition-transform hover:scale-110 shadow-[4px_4px_0px_#000000] cursor-pointer"
+                  aria-label="Play video"
+                >
+                  <Play className="w-8 h-8 ml-1 fill-black" />
+                </button>
+                <span className="mt-2 bg-black/80 text-white font-mono text-[10px] font-bold px-2.5 py-0.5 border border-white/30 uppercase tracking-wider">
+                  TAP TO RESUME
+                </span>
+              </div>
+            )}
 
             {/* Bottom Video Controls */}
-            <div className="pointer-events-auto bg-black/75 p-2.5 border border-white/20">
+            <div 
+              className="pointer-events-auto bg-black/85 p-2.5 border border-white/20 mt-auto"
+              onClick={(e) => e.stopPropagation()}
+            >
               <div className="flex items-center justify-between text-white text-[11px] font-mono mb-1.5">
                 <span className="text-[#FFE15A] font-bold">{formatTime(currentTime)}</span>
-                <span className="text-neutral-400 font-mono text-[10px] truncate max-w-[180px]">{reel.title}</span>
+                <span className="text-neutral-300 font-mono text-[10px] truncate max-w-[170px] uppercase font-bold">
+                  {reel.title}
+                </span>
                 <span>{formatTime(duration) || reel.duration}</span>
               </div>
               
-              {/* Progress Bar */}
-              <div className="w-full h-1.5 bg-neutral-700 overflow-hidden cursor-pointer">
+              {/* Progress Bar (Clickable/Scrubbable) */}
+              <div 
+                className="w-full h-2 bg-neutral-700 overflow-hidden cursor-pointer rounded-xs"
+                onClick={handleSeek}
+              >
                 <div 
-                  className="h-full bg-[#FFE15A]"
+                  className="h-full bg-[#FFE15A] transition-all duration-75"
                   style={{ width: `${duration ? (currentTime / duration) * 100 : 0}%` }}
-                ></div>
+                />
               </div>
             </div>
           </div>
         </div>
 
-        {/* Bottom Close Button Bar */}
-        <div className="p-2 bg-black border-t-2 border-neutral-800 flex items-center justify-between">
-          <span className="text-[11px] font-mono text-neutral-400 pl-2">
-            TAP VIDEO TO PAUSE / PLAY
-          </span>
+        {/* Bottom Bar with Play/Pause and Close Button */}
+        <div className="p-2.5 bg-black border-t-2 border-neutral-800 flex items-center justify-between">
+          <button
+            onClick={togglePlay}
+            className="flex items-center gap-1.5 text-xs font-mono font-bold text-[#FFE15A] hover:text-white transition-colors cursor-pointer"
+          >
+            {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5 fill-[#FFE15A]" />}
+            <span>{isPlaying ? 'PAUSE' : 'PLAY'}</span>
+          </button>
+          
           <button
             onClick={onClose}
-            className="bg-[#FFE15A] text-black hover:bg-white border border-black font-serif font-black text-xs px-3 py-1 uppercase tracking-wider transition-colors cursor-pointer"
+            className="bg-[#FFE15A] text-black hover:bg-white border border-black font-serif font-black text-xs px-3.5 py-1 uppercase tracking-wider transition-colors cursor-pointer"
           >
             CLOSE ✕
           </button>
