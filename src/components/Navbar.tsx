@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Menu, X, PhoneCall } from 'lucide-react';
+import { AGENCY_INFO } from '../data/content';
 
 interface NavbarProps {
   activeSection: string;
@@ -82,12 +83,14 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             })}
           </div>
 
-          {/* Desktop Right Action: ☎ TALK Button */}
+          {/* Desktop Right Action: ☎ TALK Button -> Direct to WhatsApp */}
           <div className="hidden min-[880px]:flex items-stretch">
             <a
-              href="#talk"
-              onClick={(e) => handleLinkClick(e, '#talk')}
+              href={AGENCY_INFO.whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-black text-[#FFE15A] hover:bg-[#FFE15A] hover:text-black px-4 lg:px-5 flex items-center justify-center gap-1.5 font-serif font-extrabold text-[11px] lg:text-xs uppercase tracking-wider transition-colors border-l-[2.5px] border-black"
+              aria-label="Direct WhatsApp Chat with Aaryav Studios"
             >
               <span>☎</span>
               <span>TALK</span>
@@ -97,9 +100,11 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
           {/* Mobile Right Controls */}
           <div className="flex min-[880px]:hidden items-stretch shrink-0">
             <a
-              href="#talk"
-              onClick={(e) => handleLinkClick(e, '#talk')}
+              href={AGENCY_INFO.whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
               className="hidden min-[420px]:flex bg-black text-[#FFE15A] px-2.5 sm:px-3 items-center justify-center gap-1 font-serif font-bold text-[11px] sm:text-xs uppercase tracking-wider border-l-2 border-black hover:bg-[#FFE15A] hover:text-black transition-colors"
+              aria-label="Direct WhatsApp Chat with Aaryav Studios"
             >
               <PhoneCall className="w-3 h-3 text-[#FFE15A]" />
               <span>TALK</span>
@@ -140,13 +145,15 @@ export const Navbar: React.FC<NavbarProps> = ({ activeSection }) => {
             );
           })}
           <a
-            href="#talk"
-            onClick={(e) => handleLinkClick(e, '#talk')}
+            href={AGENCY_INFO.whatsappLink}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => setMobileMenuOpen(false)}
             className="mt-1 px-3.5 py-2.5 bg-black text-[#FFE15A] border-2 border-black font-serif font-black text-xs uppercase tracking-wider flex items-center justify-between shadow-[3px_3px_0px_#000000] hover:bg-[#FFE15A] hover:text-black transition-colors"
           >
             <span className="flex items-center gap-1.5">
               <span>☎</span>
-              <span>LET'S TALK — DIRECT CONTACT</span>
+              <span>LET'S TALK — WHATSAPP DIRECT</span>
             </span>
             <span>→</span>
           </a>
