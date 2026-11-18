@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import type { ShortReel } from '../types';
-import { X, Volume2, VolumeX, Play, Pause } from 'lucide-react';
+import { X, Play, Pause } from 'lucide-react';
 
 interface ReelModalProps {
   reel: ShortReel | null;
@@ -9,38 +9,35 @@ interface ReelModalProps {
 
 export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const videoRef = useRef<HTMLVideoElement | null>(null);
 
-  // Auto-play whenever a reel is opened
+  // Auto-play silently whenever a reel is opened
   useEffect(() => {
     if (reel && videoRef.current) {
       const vid = videoRef.current;
       vid.currentTime = 0;
-      vid.muted = isMuted;
+      vid.muted = true; // Always muted for 100% seamless mobile/desktop playback
 
       const playPromise = vid.play();
       if (playPromise !== undefined) {
         playPromise
-          .then(() => {
-            setIsPlaying(true);
-          })
-          .catch((err) => {
-            console.warn('Autoplay with audio blocked, forcing muted play:', err);
-            vid.muted = true;
-            setIsMuted(true);
-            vid.play()
-              .then(() => setIsPlaying(true))
-              .catch((e) => {
-                console.error('Video playback failed:', e);
-                setIsPlaying(false);
-              });
-          });
+          .then(() => setIsPlaying(true))
+          .catch(() => setIsPlaying(false));
       }
     }
   }, [reel]);
+
+  // Ensure audio and video stop immediately if component unmounts or reel closes
+  useEffect(() => {
+    return () => {
+      if (videoRef.current) {
+        videoRef.current.pause();
+        videoRef.current.currentTime = 0;
+      }
+    };
+  }, []);
 
   // Handle escape key to close modal
   useEffect(() => {
@@ -59,27 +56,13 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
     const vid = videoRef.current;
 
     if (vid.paused) {
-      const p = vid.play();
-      if (p !== undefined) {
-        p.then(() => setIsPlaying(true))
-          .catch(() => {
-            vid.muted = true;
-            setIsMuted(true);
-            vid.play().then(() => setIsPlaying(true));
-          });
-      }
+      vid.play()
+        .then(() => setIsPlaying(true))
+        .catch(() => setIsPlaying(false));
     } else {
       vid.pause();
       setIsPlaying(false);
     }
-  };
-
-  const toggleMute = (e?: React.MouseEvent) => {
-    if (e) e.stopPropagation();
-    if (!videoRef.current) return;
-    const nextMuted = !videoRef.current.muted;
-    videoRef.current.muted = nextMuted;
-    setIsMuted(nextMuted);
   };
 
   const handleTimeUpdate = () => {
@@ -131,7 +114,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
           </button>
         </div>
 
-        {/* 9:16 Vertical Screen Only */}
+        {/* 9:16 Vertical Screen Player */}
         <div 
           className="relative aspect-[9/16] max-h-[calc(92vh-85px)] bg-black overflow-hidden flex items-center justify-center grow cursor-pointer select-none"
           onClick={togglePlay}
@@ -146,7 +129,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
               playsInline
               autoPlay
               loop
-              muted={isMuted}
+              muted
               onTimeUpdate={handleTimeUpdate}
               onPlay={() => setIsPlaying(true)}
               onPause={() => setIsPlaying(false)}
@@ -161,29 +144,14 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
 
           {/* Reel Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-transparent to-black/35 pointer-events-none flex flex-col justify-between p-3.5">
-            {/* Top badges */}
+            {/* Top badge (No mute button) */}
             <div className="flex items-center justify-between pointer-events-auto">
               <span className="bg-[#FFE15A] text-black border border-black font-mono font-bold text-[10px] px-2 py-0.5 uppercase shadow-[2px_2px_0px_#000000]">
                 {reel.category}
               </span>
-              <button
-                type="button"
-                onClick={toggleMute}
-                className="bg-black/80 hover:bg-black p-1.5 border border-white/40 text-[#FFE15A] cursor-pointer shadow-[2px_2px_0px_#000000] flex items-center gap-1.5 px-2.5 font-mono text-[10px] uppercase font-bold"
-                aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
-              >
-                {isMuted ? (
-                  <>
-                    <VolumeX className="w-3.5 h-3.5 text-red-400" />
-                    <span>UNMUTE 🔊</span>
-                  </>
-                ) : (
-                  <>
-                    <Volume2 className="w-3.5 h-3.5 text-[#FFE15A]" />
-                    <span>AUDIO ON</span>
-                  </>
-                )}
-              </button>
+              <span className="bg-black/80 text-[#FFE15A] font-mono text-[10px] font-bold px-2 py-0.5 border border-white/20 uppercase tracking-wider">
+                SILENT REEL PREVIEW
+              </span>
             </div>
 
             {/* Center Play Button Overlay (visible when paused) */}
@@ -198,7 +166,7 @@ export const ReelModal: React.FC<ReelModalProps> = ({ reel, onClose }) => {
                   <Play className="w-8 h-8 ml-1 fill-black" />
                 </button>
                 <span className="mt-2 bg-black/80 text-white font-mono text-[10px] font-bold px-2.5 py-0.5 border border-white/30 uppercase tracking-wider">
-                  TAP TO RESUME
+                  TAP TO PLAY
                 </span>
               </div>
             )}

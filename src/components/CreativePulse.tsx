@@ -4,8 +4,6 @@ import {
   ExternalLink, 
   Pause, 
   Play, 
-  VolumeX, 
-  Volume2, 
   ArrowRight, 
   MapPin, 
   Clock, 
@@ -16,7 +14,6 @@ import {
 export const CreativePulse: React.FC = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const [isPlaying, setIsPlaying] = useState(true);
-  const [isMuted, setIsMuted] = useState(true);
 
   const togglePlay = () => {
     if (videoRef.current) {
@@ -27,13 +24,6 @@ export const CreativePulse: React.FC = () => {
         videoRef.current.play();
         setIsPlaying(true);
       }
-    }
-  };
-
-  const toggleMute = () => {
-    if (videoRef.current) {
-      videoRef.current.muted = !isMuted;
-      setIsMuted(!isMuted);
     }
   };
 
@@ -130,7 +120,7 @@ export const CreativePulse: React.FC = () => {
                     poster="/videos/optimized/reel-0119.jpg"
                     autoPlay
                     loop
-                    muted={isMuted}
+                    muted
                     playsInline
                     className="w-full h-full object-cover absolute inset-0 z-0"
                   />
@@ -144,18 +134,10 @@ export const CreativePulse: React.FC = () => {
                       <button
                         type="button"
                         onClick={togglePlay}
-                        className="w-7 h-7 bg-black/80 hover:bg-black text-white flex items-center justify-center border border-white/60 transition-colors"
+                        className="w-7 h-7 bg-black/80 hover:bg-black text-white flex items-center justify-center border border-white/60 transition-colors cursor-pointer"
                         aria-label={isPlaying ? 'Pause video' : 'Play video'}
                       >
                         {isPlaying ? <Pause className="w-3.5 h-3.5" /> : <Play className="w-3.5 h-3.5" />}
-                      </button>
-                      <button
-                        type="button"
-                        onClick={toggleMute}
-                        className="w-7 h-7 bg-black/80 hover:bg-black text-white flex items-center justify-center border border-white/60 transition-colors"
-                        aria-label={isMuted ? 'Unmute audio' : 'Mute audio'}
-                      >
-                        {isMuted ? <VolumeX className="w-3.5 h-3.5" /> : <Volume2 className="w-3.5 h-3.5" />}
                       </button>
                     </div>
                   </div>

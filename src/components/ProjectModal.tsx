@@ -43,6 +43,7 @@ export const ProjectModal: React.FC<ProjectModalProps> = ({ project, onClose }) 
                 poster={project.image}
                 controls
                 autoPlay
+                muted
                 playsInline
                 className="w-full h-full object-contain bg-black"
               />
