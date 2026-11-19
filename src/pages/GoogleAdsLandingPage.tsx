@@ -97,7 +97,6 @@ export const GoogleAdsLandingPage: React.FC = () => {
         <GoogleAdsHero
           onQuoteClick={scrollToQuote}
           onExploreWorkClick={scrollToPortfolio}
-          onOpenVideoModal={handleOpenVideoModal}
         />
 
         {/* 3. Social Proof Section */}
