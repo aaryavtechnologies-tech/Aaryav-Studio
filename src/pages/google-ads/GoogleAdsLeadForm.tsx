@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { saveLeadSubmission } from '../../utils/tracking';
-import { Send, AlertCircle, Lock } from 'lucide-react';
+import { saveLeadSubmission, trackEvent } from '../../utils/tracking';
+import { Send, AlertCircle, Lock, MessageSquare } from 'lucide-react';
 
 interface GoogleAdsLeadFormProps {
   preselectedService?: string;
@@ -294,6 +294,29 @@ export const GoogleAdsLeadForm: React.FC<GoogleAdsLeadFormProps> = ({
                   </>
                 )}
               </button>
+            </div>
+
+            {/* Divider OR */}
+            <div className="relative flex py-1 items-center">
+              <div className="flex-grow border-t-2 border-black/10"></div>
+              <span className="flex-shrink mx-3 font-mono text-[11px] font-bold uppercase text-neutral-500">OR NEED AN IMMEDIATE RESPONSE?</span>
+              <div className="flex-grow border-t-2 border-black/10"></div>
+            </div>
+
+            {/* Direct WhatsApp Quote Button */}
+            <div>
+              <a
+                href={`https://wa.me/919328603748?text=${encodeURIComponent(
+                  `Hello Aaryav Studios, I would like to get a quote for ${service}. Please share details.`
+                )}`}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => trackEvent('click_whatsapp', { source: 'lead_form_direct' })}
+                className="w-full bg-[#FFE15A] text-black hover:bg-black hover:text-[#FFE15A] border-3 border-black py-3.5 px-6 font-serif font-black text-xs sm:text-sm uppercase tracking-wider shadow-[4px_4px_0px_#000000] flex items-center justify-center gap-2 transition-all cursor-pointer"
+              >
+                <MessageSquare className="w-4 h-4" />
+                <span>CHAT DIRECTLY ON WHATSAPP WITH STUDIO</span>
+              </a>
             </div>
 
             {/* Reassurance Disclaimer */}

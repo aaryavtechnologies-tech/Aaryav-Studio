@@ -1,13 +1,15 @@
 import { lazy, Suspense } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { MainLandingPage } from './pages/MainLandingPage';
 
-// Lazy-load pages for optimal Core Web Vitals and fast initial bundle
+// New High-Conversion Google Ads Landing Page as primary experience
 const GoogleAdsLandingPage = lazy(() =>
   import('./pages/GoogleAdsLandingPage').then((m) => ({ default: m.GoogleAdsLandingPage }))
 );
 const ThankYouPage = lazy(() =>
   import('./pages/ThankYouPage').then((m) => ({ default: m.ThankYouPage }))
+);
+const MainLandingPage = lazy(() =>
+  import('./pages/MainLandingPage').then((m) => ({ default: m.MainLandingPage }))
 );
 
 function PageLoadingFallback() {
@@ -26,16 +28,19 @@ export function App() {
     <BrowserRouter>
       <Suspense fallback={<PageLoadingFallback />}>
         <Routes>
-          {/* Main Website Route (Completely Unaltered) */}
-          <Route path="/" element={<MainLandingPage />} />
+          {/* Main Website Route now points directly to the new Google Ads Landing Page */}
+          <Route path="/" element={<GoogleAdsLandingPage />} />
 
-          {/* Dedicated Google Ads Landing Page */}
+          {/* Dedicated /google-ads route also serves the landing page */}
           <Route path="/google-ads" element={<GoogleAdsLandingPage />} />
 
           {/* Lead Submission Confirmation Page */}
           <Route path="/thank-you" element={<ThankYouPage />} />
 
-          {/* Fallback to Home for unknown routes */}
+          {/* Previous Portfolio Website archived at /legacy */}
+          <Route path="/legacy" element={<MainLandingPage />} />
+
+          {/* Fallback to Home */}
           <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Suspense>
