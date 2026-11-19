@@ -186,15 +186,16 @@ export const GoogleAdsLeadForm: React.FC<GoogleAdsLeadFormProps> = ({
               <label htmlFor="phoneNumber" className="block font-mono text-xs font-black uppercase text-black mb-1.5">
                 Phone / WhatsApp Number <span className="text-red-600">*</span>
               </label>
-              <div className="flex gap-2">
+              <div className="w-full flex border-2 border-black bg-[#F7F7F7] focus-within:bg-white focus-within:shadow-[3px_3px_0px_#000000] transition-all">
                 <select
                   value={countryCode}
                   onChange={(e) => setCountryCode(e.target.value)}
-                  className="bg-[#F7F7F7] border-2 border-black px-3 py-3 font-mono text-xs font-bold text-black focus:outline-none focus:bg-white focus:shadow-[3px_3px_0px_#000000] cursor-pointer"
+                  aria-label="Country Code"
+                  className="bg-transparent border-0 border-r-2 border-black px-2.5 sm:px-3 py-3 font-mono text-xs font-bold text-black focus:outline-none cursor-pointer shrink-0"
                 >
                   {COUNTRY_CODES.map((c) => (
                     <option key={c.code} value={c.code}>
-                      {c.label}
+                      {c.country} ({c.code})
                     </option>
                   ))}
                 </select>
@@ -205,7 +206,7 @@ export const GoogleAdsLeadForm: React.FC<GoogleAdsLeadFormProps> = ({
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   placeholder="e.g. 98765 43210"
-                  className="flex-1 bg-[#F7F7F7] border-2 border-black px-4 py-3 font-sans text-sm text-black placeholder:text-neutral-400 focus:outline-none focus:bg-white focus:shadow-[3px_3px_0px_#000000] transition-all"
+                  className="w-full min-w-0 bg-transparent border-0 px-3 sm:px-4 py-3 font-sans text-sm text-black placeholder:text-neutral-400 focus:outline-none"
                 />
               </div>
               <span className="block font-mono text-[10px] text-neutral-500 uppercase mt-1">
