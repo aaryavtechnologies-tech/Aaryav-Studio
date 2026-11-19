@@ -95,6 +95,39 @@ export const GoogleAdsPortfolio: React.FC<GoogleAdsPortfolioProps> = ({
       videoSrc: '/videos/optimized/reel-0113.mp4',
       description: 'Kinetic energy brand edit highlighting speed ramps, rhythm cuts, and seamless visual impact.',
     },
+    {
+      id: 'short-7',
+      title: 'Lifestyle & Product Dynamics',
+      client: 'Creative Showcase',
+      category: 'Visual Story',
+      type: 'short-reel',
+      duration: '0:30',
+      thumbnail: '/videos/optimized/v-video.jpg',
+      videoSrc: '/videos/optimized/v-video.mp4',
+      description: 'Engaging vertical reel blending dynamic sound effects, pacing, and visual storytelling.',
+    },
+    {
+      id: 'short-8',
+      title: 'Poojara Retail Promo Cut',
+      client: 'Poojara Telecom',
+      category: 'Retail Showcase',
+      type: 'short-reel',
+      duration: '0:41',
+      thumbnail: '/videos/optimized/poojara-cut-12.jpg',
+      videoSrc: '/videos/optimized/poojara-cut-12.mp4',
+      description: 'Complete showroom feature with store-walkthrough cuts, festive offers, and local footfall drivers.',
+    },
+    {
+      id: 'short-9',
+      title: 'Money Hub Market Growth',
+      client: 'Money Hub Podcast',
+      category: 'Finance Talk',
+      type: 'short-reel',
+      duration: '0:17',
+      thumbnail: '/videos/optimized/money-hub-part4.jpg',
+      videoSrc: '/videos/optimized/money-hub-part4.mp4',
+      description: 'Punchy talking-head reel with kinetic subtitle animations, retention zooms, and audio punctuation.',
+    },
 
     // Long-Form & YouTube
     {
@@ -143,6 +176,18 @@ export const GoogleAdsPortfolio: React.FC<GoogleAdsPortfolioProps> = ({
       youtubeId: 'R0k0FAufXdc',
       youtubeUrl: 'https://youtu.be/R0k0FAufXdc',
       description: 'Documentary style lecture polish with historical archival B-roll integration and broadcast audio mastering.',
+    },
+    {
+      id: 'long-5',
+      title: 'Digital Literacy | Masterclass',
+      client: 'Educational Hix',
+      category: 'Educational Story',
+      type: 'long-form',
+      duration: '45:20',
+      thumbnail: '/work/yt-matter-pure-1.jpg',
+      youtubeId: 'GjnrnxUUaxU',
+      youtubeUrl: 'https://youtu.be/GjnrnxUUaxU',
+      description: 'Class 9 Chemistry Ch-2 One Shot: Is Matter Around Us Pure? Multi-camera dialogue synchronization and dynamic callouts.',
     },
   ];
 
