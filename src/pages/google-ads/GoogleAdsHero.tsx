@@ -86,17 +86,17 @@ export const GoogleAdsHero: React.FC<GoogleAdsHeroProps> = ({
             {/* Main Featured Cinema Preview (7 Cols) */}
             <div className="md:col-span-7 relative group aspect-video sm:aspect-[16/10] bg-neutral-900 overflow-hidden flex items-center justify-center">
               <img
-                src="/videos/optimized/luxury-watch.jpg"
-                alt="Aaryav Studios Commercial Video Production"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
+                src="/hero-studio-suite.jpg"
+                alt="Aaryav Studios Creative Post-Production Editing Suite"
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
               {/* Play Button Trigger — Visible when bringing mouse cursor on video */}
               <button
                 type="button"
-                onClick={() => onOpenVideoModal('/videos/optimized/luxury-watch.mp4', 'New SS Watch & Electronics Commercial')}
-                aria-label="Play Featured Commercial"
+                onClick={() => onOpenVideoModal('/videos/optimized/core-dev-reel.mp4', 'Aaryav Studios // Creative Post-Production Suite')}
+                aria-label="Play Studio Showreel"
                 className="absolute w-14 h-14 sm:w-16 sm:h-16 bg-[#FFE15A] text-black border-3 border-black flex items-center justify-center shadow-[4px_4px_0px_#000000] opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 active:scale-95 transition-all duration-300 ease-out cursor-pointer"
               >
                 <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current ml-1" />
@@ -105,10 +105,10 @@ export const GoogleAdsHero: React.FC<GoogleAdsHeroProps> = ({
               {/* Video Overlay Details */}
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono">
                 <span className="bg-black/90 text-white px-2.5 py-1 border border-neutral-700">
-                  ▶ FEATURED: COMMERCIAL PROMO
+                  ✦ STUDIO POST-PRODUCTION SUITE
                 </span>
                 <span className="bg-[#FFE15A] text-black font-bold px-2 py-0.5 border border-black text-[10px]">
-                  TAP TO PREVIEW
+                  NEO-BRUTALIST CINEMA
                 </span>
               </div>
             </div>
