@@ -254,9 +254,9 @@ export const GoogleAdsPortfolio: React.FC<GoogleAdsPortfolioProps> = ({
                   </span>
                 </div>
 
-                {/* Central Play Button */}
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#FFE15A] border-3 border-black flex items-center justify-center shadow-[3px_3px_0px_#000000] group-hover:scale-110 active:scale-95 transition-transform">
+                {/* Hover Play Button Overlay — Visible when bringing mouse cursor on video */}
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/35 transition-colors duration-300 flex items-center justify-center pointer-events-none">
+                  <div className="w-12 h-12 sm:w-14 sm:h-14 bg-[#FFE15A] text-black border-3 border-black flex items-center justify-center shadow-[4px_4px_0px_#000000] opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 transition-all duration-300 ease-out transform">
                     <Play className="w-5 h-5 sm:w-6 sm:h-6 fill-black text-black ml-0.5" />
                   </div>
                 </div>

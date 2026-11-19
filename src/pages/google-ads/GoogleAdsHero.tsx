@@ -92,12 +92,12 @@ export const GoogleAdsHero: React.FC<GoogleAdsHeroProps> = ({
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/30 pointer-events-none" />
 
-              {/* Play Button Trigger */}
+              {/* Play Button Trigger — Visible when bringing mouse cursor on video */}
               <button
                 type="button"
                 onClick={() => onOpenVideoModal('/videos/optimized/luxury-watch.mp4', 'New SS Watch & Electronics Commercial')}
                 aria-label="Play Featured Commercial"
-                className="absolute w-14 h-14 sm:w-16 sm:h-16 bg-[#FFE15A] text-black border-3 border-black flex items-center justify-center shadow-[4px_4px_0px_#000000] hover:scale-110 active:scale-95 transition-transform cursor-pointer"
+                className="absolute w-14 h-14 sm:w-16 sm:h-16 bg-[#FFE15A] text-black border-3 border-black flex items-center justify-center shadow-[4px_4px_0px_#000000] opacity-0 scale-75 group-hover:opacity-100 group-hover:scale-100 hover:scale-110 active:scale-95 transition-all duration-300 ease-out cursor-pointer"
               >
                 <Play className="w-6 h-6 sm:w-7 sm:h-7 fill-current ml-1" />
               </button>
