@@ -283,11 +283,11 @@ export const GoogleAdsPortfolio: React.FC<GoogleAdsPortfolioProps> = ({
                   src={item.thumbnail}
                   alt={item.title}
                   loading="lazy"
-                  className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 filter brightness-95"
+                  className="w-full h-full object-cover filter grayscale contrast-115 brightness-95 group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105 transition-all duration-700 ease-out"
                 />
 
                 {/* Gradient Overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
 
                 {/* Category & Duration Badges */}
                 <div className="absolute top-3 left-3 right-3 flex items-center justify-between text-xs font-mono font-bold">

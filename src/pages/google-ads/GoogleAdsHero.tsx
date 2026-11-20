@@ -82,13 +82,18 @@ export const GoogleAdsHero: React.FC<GoogleAdsHeroProps> = ({
           <div className="grid grid-cols-1 md:grid-cols-12 gap-0 divide-y-2 md:divide-y-0 md:divide-x-2 divide-neutral-800 bg-[#0A0A0A]">
             
             {/* Main Featured Cinema Artwork (7 Cols) */}
-            <div className="md:col-span-7 relative group aspect-video sm:aspect-[16/10] bg-neutral-900 overflow-hidden flex items-center justify-center">
+            <div className="md:col-span-7 relative group aspect-video sm:aspect-[16/10] bg-neutral-900 overflow-hidden flex items-center justify-center cursor-pointer">
               <img
                 src="/hero-studio-suite.jpg"
                 alt="Aaryav Studios Creative Post-Production Editing Suite"
-                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                className="w-full h-full object-cover filter grayscale contrast-115 brightness-95 group-hover:grayscale-0 group-hover:contrast-100 group-hover:brightness-100 group-hover:scale-105 transition-all duration-700 ease-out"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+
+              {/* Hover For Color Hint Badge */}
+              <div className="absolute top-3 right-3 bg-black/85 text-[#FFE15A] font-mono font-bold text-[9px] uppercase px-2.5 py-0.5 border border-black group-hover:opacity-0 transition-opacity pointer-events-none shadow-[2px_2px_0px_#000000]">
+                HOVER FOR COLOR
+              </div>
 
               {/* Artwork Overlay Details */}
               <div className="absolute bottom-3 left-3 right-3 flex items-center justify-between text-xs font-mono pointer-events-none">
